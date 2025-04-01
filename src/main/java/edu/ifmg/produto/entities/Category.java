@@ -1,14 +1,23 @@
 package edu.ifmg.produto.entities;
 
+import jakarta.persistence.*;
+
 import java.util.Objects;
 
-public class Category {
-    private Long id;
-    private String nome;
+@Entity //diz que Category é um "model" é uma tabela no banco
+//@Table(name= "tb_category") é a diretiva pra nomear a tabela que não terá o mesmo nome da classe
 
-    public Category(Long id, String nome) {
+public class Category { //logo a tabela será categories
+
+    @Id //sempre importar do jakarta
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    private Long id;
+    private String name;
+
+    public Category(Long id, String name) {
         this.id = id;
-        this.nome = nome;
+        this.name = name;
     }
 
     public Category() {
@@ -24,11 +33,11 @@ public class Category {
     }
 
     public String getNome() {
-        return nome;
+        return name;
     }
 
     public void setNome(String nome) {
-        this.nome = nome;
+        this.name = nome;
     }
 
     @Override
@@ -47,7 +56,7 @@ public class Category {
     public String toString() {
         return "Category{" +
                 "id=" + id +
-                ", nome='" + nome + '\'' +
+                ", nome='" + name + '\'' +
                 '}';
     }
 }
