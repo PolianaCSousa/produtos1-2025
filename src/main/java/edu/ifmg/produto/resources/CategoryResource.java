@@ -6,7 +6,9 @@ import edu.ifmg.produto.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController //diz que vai receber requisições
@@ -43,5 +45,29 @@ public class CategoryResource {
 
     }
 
+    @PostMapping
+    public ResponseEntity<CategoryDTO> insert(@RequestBody CategoryDTO dto){
+
+        dto = categoryService.insert(dto);
+
+        //abaixo criamos a uri com o endpoind que acessará esse recurso (o último nível do REST) e partir dessa rota tem varias acçoes que posso fazer com o category retornado (editar, excluir e etc)
+        //quando eu crio uma category, o que mais eu posso fazer? eu posso visualizá-la, entao por isso retornamos a uri que me permite ver a categoria
+        URI uri = ServletUriComponentsBuilder.
+                fromCurrentRequest(). //pega o caminho da minha aplicação
+                        path("/{id}"). //ele adiciona o id na rota
+                        buildAndExpand(dto.getId()).
+                toUri();
+
+        return ResponseEntity.created(uri).body(dto);
+
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<CategoryDTO> update(@PathVariable Long id, @RequestBody CategoryDTO dto){
+
+        dto = categoryService.update(id, dto);
+
+        return ResponseEntity.ok().body(dto);
+    }
 
 }
