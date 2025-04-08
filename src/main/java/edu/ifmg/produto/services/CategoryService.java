@@ -3,9 +3,13 @@ package edu.ifmg.produto.services;
 import edu.ifmg.produto.dtos.CategoryDTO;
 import edu.ifmg.produto.entities.Category;
 import edu.ifmg.produto.repository.CategoryRepository;
+import edu.ifmg.produto.services.exceptions.DatabaseException;
 import edu.ifmg.produto.services.exceptions.ResourceNotFound;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,12 +25,14 @@ public class CategoryService {
 
 //sempre vamos buscar os dados do repository e converter para DTO
     @Transactional(readOnly = true)
-    public List<CategoryDTO> findAll() {
-       List<Category> list = categoryRepository.findAll();
-        return list.stream().
+    public Page<CategoryDTO> findAll(Pageable pageable) {
+       Page<Category> list = categoryRepository.findAll(pageable);
+        /*return list.stream().
                 map(categoria-> //essa é uma função lambda (semelhante a arrow function)
                         new CategoryDTO(categoria)).
-                collect(Collectors.toList());
+                collect(Collectors.toList());*/
+
+        return list.map(c -> new CategoryDTO(c));
 
     }
 
@@ -62,4 +68,17 @@ public class CategoryService {
 
     }
 
+    @Transactional
+    public void delete(Long id){
+
+        if(!categoryRepository.existsById(id)){
+            throw new ResourceNotFound("Category not found " + id);
+        }
+
+        try {
+            categoryRepository.deleteById(id);
+        }catch (DataIntegrityViolationException e) {
+            throw new DatabaseException("Integrity violation");
+        }
+    }
 }

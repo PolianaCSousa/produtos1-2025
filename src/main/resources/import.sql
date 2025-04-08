@@ -1,2 +1,3 @@
-insert into category (name) values ('livros');
-insert into category (name) values ('discos');
+insert into category (name,created_at) values ('teclado', NOW());
+insert into category (name, created_at) values ('mouse', NOW());
+insert into category (name, created_at) values ('computadores', NOW());

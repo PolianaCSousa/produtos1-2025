@@ -2,6 +2,7 @@ package edu.ifmg.produto.entities;
 
 import jakarta.persistence.*;
 
+import java.time.Instant;
 import java.util.Objects;
 
 @Entity //diz que Category é um "model" é uma tabela no banco
@@ -14,6 +15,10 @@ public class Category { //logo a tabela será categories
 
     private Long id;
     private String name;
+    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+    private Instant createdAt;
+    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+    private Instant updatedAt;
 
     public Category(Long id, String name) {
         this.id = id;
@@ -38,6 +43,24 @@ public class Category { //logo a tabela será categories
 
     public void setNome(String nome) {
         this.name = nome;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    @PrePersist
+    private void prePersist() {
+        createdAt = Instant.now();
+    }
+
+    @PreUpdate
+    private void preUpdate() {
+        updatedAt = Instant.now();
     }
 
     @Override
