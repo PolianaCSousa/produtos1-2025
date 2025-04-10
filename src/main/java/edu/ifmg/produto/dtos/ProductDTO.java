@@ -1,39 +1,29 @@
-package edu.ifmg.produto.entities;
+package edu.ifmg.produto.dtos;
 
+import edu.ifmg.produto.entities.Category;
+import edu.ifmg.produto.entities.Product;
 import jakarta.persistence.*;
-
 
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-@Entity
-@Table(name="products")
-public class Product {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ProductDTO {
+
+
     private long id;
     private String name;
     private String description;
     private double price;
     private String imageUrl;
+    private Set<CategoryDTO> categories = new HashSet<>();
 
-    private Instant createAt;
-    private Instant updateAt;
+    public ProductDTO() {}
 
-    @ManyToMany
-    //a tabela pivô será configurada aqui no JoinTable
-    @JoinTable(name = "product_category",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
-    private Set<Category> categories = new HashSet<>();
-
-    public Product() {}
-
-    public Product(long id, String name, String description, double price, String imageUrl) {
+    public ProductDTO(long id, String name, String description, double price, String imageUrl) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -43,19 +33,23 @@ public class Product {
 
     }
 
-    public Product(Product entity) {
+    public ProductDTO(Product entity) { //estamos preenchendo os dados com uma entidade
         this.id = entity.getId();
         this.name = entity.getName();
         this.description = entity.getDescription();
         this.price = entity.getPrice();
         this.imageUrl = entity.getImageUrl();
-        this.createAt = entity.getCreateAt();
-        this.updateAt = entity.getUpdateAt();
+
+        //isso faz a mesma coisa do codigo do construtor abaixo no laço forEach
+        entity.getCategories().forEach(category -> this.categories.add(new CategoryDTO(category)));
+
     }
 
-    public Product(Product product, Set<Category> categories) {
+    public ProductDTO(Product product, Set<Category> categories) {
         this(product);
-        this.categories = categories;
+
+        categories
+                .forEach(c -> this.categories.add(new CategoryDTO(c)));
     }
 
 
@@ -100,35 +94,29 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public Instant getCreateAt() {
-        return createAt;
-    }
-
-    @PrePersist
-    public void prePersist() {
-        this.createAt = Instant.now();
-    }
-
-    public Instant getUpdateAt() {
-        return updateAt;
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.updateAt = Instant.now();
-    }
-
-    public Set<Category> getCategories() {
+    public Set<CategoryDTO> getCategories() {
         return categories;
     }
 
-    public void setCategories(Set<Category> categories) {
+    public void setCategories(Set<CategoryDTO> categories) {
         this.categories = categories;
     }
 
     @Override
+    public String toString() {
+        return "ProductDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", categories=" + categories +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Product product)) return false;
+        if (!(o instanceof ProductDTO product)) return false;
         return id == product.id;
     }
 
