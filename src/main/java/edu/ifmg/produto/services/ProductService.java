@@ -1,6 +1,8 @@
 package edu.ifmg.produto.services;
 
+import edu.ifmg.produto.dtos.CategoryDTO;
 import edu.ifmg.produto.dtos.ProductDTO;
+import edu.ifmg.produto.entities.Category;
 import edu.ifmg.produto.entities.Product;
 import edu.ifmg.produto.repository.ProductRepository;
 import edu.ifmg.produto.services.exceptions.DatabaseException;
@@ -27,7 +29,7 @@ public class ProductService {
 
         Page<Product> list =
                 productRepository.findAll(pageable);
-        return list.map(product -> new ProductDTO(product);
+        return list.map(product -> new ProductDTO(product));
 
     }
 
@@ -99,5 +101,8 @@ public class ProductService {
         entity.setPrice(dto.getPrice());
         entity.setImageUrl(dto.getImageUrl());
 
+        dto.getCategories()
+                .forEach(c ->
+                        entity.getCategories().add(new Category(c)));
     }
 }
