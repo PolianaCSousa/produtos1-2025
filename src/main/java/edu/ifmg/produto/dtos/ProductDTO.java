@@ -2,7 +2,9 @@ package edu.ifmg.produto.dtos;
 
 import edu.ifmg.produto.entities.Category;
 import edu.ifmg.produto.entities.Product;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.Instant;
 import java.util.HashSet;
@@ -11,14 +13,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
-public class ProductDTO {
+public class ProductDTO extends RepresentationModel<ProductDTO> { // a gente extendeu a classe RepresentationModel para o DTO ter acesso aos metodos dessa classe
 
-
+    //essas descrições com a diretiva @Schema colocamos normalmante nos DTO's e não nas Entities
+    @Schema(description = "Database generated ID product")
     private long id;
+    @Schema(description = "Product name") //os nomes obvios nao precisamos fazer, mas vamos fazer so pra didática mesmo aqui
     private String name;
+    @Schema(description = "A detailed description of the product")
     private String description;
+    @Schema(description = "Product price")
     private double price;
+    @Schema(description = "Product url of the image")
     private String imageUrl;
+    @Schema(description = "Product categories (one or more)")
     private Set<CategoryDTO> categories = new HashSet<>();
 
     public ProductDTO() {}

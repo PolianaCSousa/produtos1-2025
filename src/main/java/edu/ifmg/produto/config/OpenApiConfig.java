@@ -14,7 +14,8 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI().info(new Info()
-                .title("Produto API")
+                .title("Produtos API")
+                .description("Projeto 01 - Prog. Backend")
                 .version("1.0")
                 .license(new License()
                         .name("Apache 2.0")

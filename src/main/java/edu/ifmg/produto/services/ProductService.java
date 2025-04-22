@@ -5,11 +5,14 @@ import edu.ifmg.produto.dtos.ProductDTO;
 import edu.ifmg.produto.entities.Category;
 import edu.ifmg.produto.entities.Product;
 import edu.ifmg.produto.repository.ProductRepository;
+import edu.ifmg.produto.resources.ProductResource;
 import edu.ifmg.produto.services.exceptions.DatabaseException;
 import edu.ifmg.produto.services.exceptions.ResourceNotFound;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -29,7 +32,12 @@ public class ProductService {
 
         Page<Product> list =
                 productRepository.findAll(pageable);
-        return list.map(product -> new ProductDTO(product));
+        return list.map(product ->
+                                new ProductDTO(product)
+                                        .add(linkTo(methodOn(ProductResource.class).findAll(null)).withSelfRel()) //essa linha cria um link para o méto do findAll da classe ProductResource
+                                        .add(linkTo(methodOn(ProductResource.class).findById(product.getId())).withRel("Get a product"))
+
+        );
 
     }
 
@@ -38,8 +46,17 @@ public class ProductService {
 
         Optional<Product> obj = productRepository.findById(id);
 
-        Product product = obj.orElseThrow(()-> new ResourceNotFound("Product not found " + id));
-        return new ProductDTO(product);
+        Product product = obj.orElseThrow(()->
+                new ResourceNotFound("Product not found " + id));
+
+        /*return new ProductDTO(product)
+                .add( linkTo(methodOn(ProductResource.class).findById(null)).withSelfRel() )
+                .add( linkTo(methodOn(ProductResource.class).findAll(null)).withRel("All products") )
+                .add( linkTo(methodOn(ProductResource.class).delete(product.getId())).withRel("Update product") )
+                .add( linkTo(methodOn(ProductResource.class).update()).withRel("Delete product") )
+                ;
+
+         */
     }
 
     @Transactional
