@@ -25,7 +25,7 @@ public class Product {
     private Instant updateAt;
 
     @ManyToMany
-    //a tabela pivô será configurada aqui no JoinTable
+    //a tabela pivô será configurada aqui no JoinTable e essas configuraçõe sao acessiveis (nao sei se tem um termo melhor pra isso) atraves de categories definido na linha abaixo
     @JoinTable(name = "product_category",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")

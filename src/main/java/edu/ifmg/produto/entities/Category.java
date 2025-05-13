@@ -4,7 +4,9 @@ import edu.ifmg.produto.dtos.CategoryDTO;
 import jakarta.persistence.*;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity //diz que Category é um "model" é uma tabela no banco
 //@Table(name= "tb_category") é a diretiva pra nomear a tabela que não terá o mesmo nome da classe
@@ -20,6 +22,10 @@ public class Category { //logo a tabela será categories
     private Instant createdAt;
     @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
     private Instant updatedAt;
+
+    //com o lazy ele so tras quando precisar - como assim?
+    @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY) //esse nome vem da propriedade definida em Product.java
+    private Set<Product> products = new HashSet<>();
 
     public Category(Long id, String name) {
         this.id = id;
@@ -57,6 +63,16 @@ public class Category { //logo a tabela será categories
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+
+    //se nao me engano esse é o mapeamento bidirecional. - dessa forma eu consigo  buscar os produtos de uma categoria
+    public Set<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(Set<Product> products) {
+        this.products = products;
     }
 
     @PrePersist

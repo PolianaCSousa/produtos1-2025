@@ -13,7 +13,7 @@ public class Factory {
         p.setPrice(5000);
         p.setImageUrl("http://img.com/iphonexxx.jpg");
         p.getCategories()
-                .add(new Category(60L,"News"));
+                .add(new Category(1L,"News"));
         return p;
     }
 
@@ -21,6 +21,6 @@ public class Factory {
     public static ProductDTO createProductDTO(){
         Product p = createProduct();
 
-        return new ProductDTO();
+        return new ProductDTO(p);
     }
 }
