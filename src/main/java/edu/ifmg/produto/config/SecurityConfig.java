@@ -10,13 +10,14 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
+    // esse é um cara que vai em todas as requisições e verifica se tem permissão
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests(
                 authorize ->
-                        authorize.requestMatchers("/**").permitAll()
+                        authorize
+                                .requestMatchers("/**").permitAll()
                                 .anyRequest().authenticated()
         );
 
