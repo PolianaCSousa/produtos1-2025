@@ -5,6 +5,8 @@ import edu.ifmg.produto.services.exceptions.ResourceNotFound;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -36,6 +38,24 @@ public class ResourceExceptionListener { //posso trocar listener por handler e e
         error.setError("Database exception");
         error.setTimestamp(Instant.now());
         error.setPath(request.getRequestURI());
+
+        return ResponseEntity.status(status).body(error);
+    }
+
+    //é importante saber o nome da exceção para tratá-la
+    @ExceptionHandler(MethodArgumentNotValidException.class) //quando uma excessão do tipo DtabaseException acontecer o java vai acionar o metodo abaixo
+    public ResponseEntity<ValidationError> methodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
+        ValidationError error = new ValidationError();
+        error.setStatus(status.value());
+        error.setMessage(ex.getMessage());
+        error.setError("Validation exception");
+        error.setTimestamp(Instant.now());
+        error.setPath(request.getRequestURI());
+
+        for (FieldError f : ex.getBindingResult().getFieldErrors() ) {
+            error.addFieldMessage(f.getField(), f.getDefaultMessage());
+        }
 
         return ResponseEntity.status(status).body(error);
     }

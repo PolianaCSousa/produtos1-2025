@@ -37,8 +37,8 @@ public class UserDTO {
 
     public UserDTO(User user) {
         id = user.getId();
-        firstname = user.getFirstname();
-        lastname = user.getLastname();
+        firstname = user.getFirstName();
+        lastname = user.getLastName();
         email = user.getEmail();
 
         user.getRoles()

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.MapKeyType;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -14,8 +15,8 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String firstname;
-    private String lastname;
+    private String firstName;
+    private String lastName;
     @Column(unique = true)
     private String email;
     private String password;
@@ -32,18 +33,18 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String firstname, String lastname, String email, String password) {
+    public User(Long id, String firstName, String lastName, String email, String password) {
         this.id = id;
-        this.firstname = firstname;
-        this.lastname = lastname;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.password = password;
     }
 
     public User(User entity) {
         this.id = entity.getId();
-        this.firstname = entity.getFirstname();
-        this.lastname = entity.getLastname();
+        this.firstName = entity.getFirstName();
+        this.lastName = entity.getLastName();
         this.email = entity.getEmail();
         this.password = entity.getPassword();
     }
@@ -61,20 +62,20 @@ public class User {
         this.id = id;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getLastname() {
-        return lastname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {
@@ -98,6 +99,28 @@ public class User {
     }
 
     public void setRoles(Set<Role> roles) {
+
         this.roles = roles;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof User user)) return false;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
+    public void addRole(Role role) {
+        roles.add(role);
+    }
+
+    public boolean hasRole(String roleName) {
+        return
+                !roles.stream().filter(r ->
+                        r.getAuthority().equals(roleName)).toList().isEmpty();
     }
 }
