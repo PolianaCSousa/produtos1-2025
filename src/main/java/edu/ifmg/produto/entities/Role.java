@@ -5,12 +5,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Objects;
 
 @Entity
 @Table(name = "tb_role")
-public class Role {
+public class Role implements GrantedAuthority {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +35,7 @@ public class Role {
         this.id = id;
     }
 
+    @Override //o @ averride confere se eu escrevi o nome do metodo getAuthority corretamente (ele faz parte da interface que estamos impelmentando)
     public String getAuthority() {
         return authority;
     }

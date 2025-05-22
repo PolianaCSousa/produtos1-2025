@@ -8,6 +8,7 @@ import edu.ifmg.produto.dtos.UserInsertDTO;
 import edu.ifmg.produto.entities.Product;
 import edu.ifmg.produto.entities.Role;
 import edu.ifmg.produto.entities.User;
+import edu.ifmg.produto.projections.UserDetailsProjection;
 import edu.ifmg.produto.repository.RoleRepository;
 import edu.ifmg.produto.repository.UserRepository;
 
@@ -19,17 +20,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository repository;
@@ -116,6 +121,41 @@ public class UserService {
 
 
     }
+
+
+    @Override //no nosso caso o sistema so tem email e senha, e esse username é do Spring, nao posso mudar esse metodo devido ao override, mas como o usuario so loga com o email mesmo, o username aqui vai receber o email na verdade
+    //O que é uma classe Projection?
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        List<UserDetailsProjection> result
+                = repository.searchUserAndRoleByEmail(username);
+
+        if (result.isEmpty()) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        User user = new User();
+        user.setEmail(result.get(0).getUsername());
+        user.setPassword(result.get(0).getPassword());
+        for (UserDetailsProjection p : result) {
+            user.addRole(new Role(p.getRoleId(),p.getAuthority()));
+        }
+
+
+        return user;
+    }
+
+
+//OAUTH é o fluxo de autenticação e o JWT é a especificação do token, ou seja, de como ele deve ser
+
+
+
+
+
+
+
+
+
+
 
 
 }

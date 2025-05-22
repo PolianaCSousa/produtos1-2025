@@ -10,9 +10,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 //import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 
-@Configuration
-@EnableWebSecurity
-public class SecurityConfig {
+//@Configuration
+//@EnableWebSecurity
+/*public class SecurityConfig {
     // esse é um cara que vai em todas as requisições e verifica se tem permissão
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -41,4 +41,4 @@ public class SecurityConfig {
         return http.build();
 
     }
-}
+}*/
