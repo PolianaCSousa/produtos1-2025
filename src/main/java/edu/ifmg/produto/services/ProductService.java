@@ -137,4 +137,7 @@ public class ProductService {
                 .forEach(c ->
                         entity.getCategories().add(new Category(c)));
     }
+
+    public Page<ProductDTO> findAllPaged(String name, String categpryId, Pageable pageable) {
+    }
 }

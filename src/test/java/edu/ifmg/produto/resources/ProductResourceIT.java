@@ -2,7 +2,6 @@ package edu.ifmg.produto.resources;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ifmg.produto.dtos.ProductDTO;
-import edu.ifmg.produto.services.ProductService;
 import edu.ifmg.produto.util.Factory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,16 +9,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import org.springframework.test.web.servlet.ResultActions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-
-import java.util.List;
+import edu.ifmg.produto.util.TokenUtil;
 
 //IT é de Integration Test
 @SpringBootTest
@@ -34,13 +30,23 @@ public class ProductResourceIT {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private TokenUtil tokenUtil;
+    private String username;
+    private String password;
+    private String token;
+
     private Long existingId;
     private Long nonExistingId;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception{
         existingId = 1L;
         nonExistingId = 2000L;
+
+        username = "maria@gmail.com";
+        password = "123456";
+        token = tokenUtil.obtainAccessToken(mockMvc,username,password);
 
     }
 
@@ -72,6 +78,7 @@ public class ProductResourceIT {
         ResultActions result =
                 mockMvc.perform( //esse objeto mockMvc é o que faz as requisições
                         put("/product/{id}",existingId) //o {id} é substituído pelo existingId
+                                .header("Authorization","Bearer " + token)
                                 .content(dtoJson) //o update recebe um json com os dados que vou atualizar e é nesse mét0do que passamos o json
                                 .contentType(MediaType.APPLICATION_JSON) //isso é o que estou mandando
                                 .accept(MediaType.APPLICATION_JSON) //isso é o que estou retornando
@@ -96,6 +103,7 @@ public class ProductResourceIT {
         ResultActions result =
                 mockMvc.perform(
                         put("/product/{id}",nonExistingId)
+                                .header("Authorization","Bearer " + token)
                                 .content(dtoJson)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON)
@@ -119,6 +127,7 @@ public class ProductResourceIT {
         ResultActions result =
                 mockMvc.perform(
                         post("/product")
+                                .header("Authorization","Bearer " + token)
                                 .content(dtoJson)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON)
@@ -134,8 +143,9 @@ public class ProductResourceIT {
 
         ResultActions result =
                 mockMvc.perform( //esse objeto mockMvc é o que faz as requisições
-                        delete("/product/{id}",existingId) //o {id} é substituído pelo existingId
-                                        );
+                        delete("/product/{id}",existingId)
+                                .header("Authorization","Bearer " + token)//o {id} é substituído pelo existingId
+                        );
 
         result.andExpect(status().isNoContent()); //verifica se o status da requisição deu certo
     }

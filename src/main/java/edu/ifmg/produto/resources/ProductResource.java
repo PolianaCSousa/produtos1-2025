@@ -2,6 +2,7 @@ package edu.ifmg.produto.resources;
 
 
 import edu.ifmg.produto.dtos.ProductDTO;
+import edu.ifmg.produto.dtos.ProductListDTO;
 import edu.ifmg.produto.services.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -118,6 +119,22 @@ public class ProductResource {
     }
 
 
+
+
+
+
+    @GetMapping(value = "/paged",produces = "application/json")
+    @Operation(
+            description = "Get all products paged",
+            summary = "Get all products paged",
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200")
+            }
+    )
+    public ResponseEntity<Page<ProductListDTO>> findAllPaged(Pageable pageable, @RequestParam(value = "categoryId", defaultValue = "0") String categpryId, @RequestParam(value = "name", defaultValue = "") String name) {
+        Page<ProductListDTO> products = productService.findAllPaged(name, categpryId, pageable);
+        return null; //é a mesma coisa que ok().body(products);
+    }
 
 
 
