@@ -2,8 +2,10 @@ package edu.ifmg.produto.services;
 
 import edu.ifmg.produto.dtos.CategoryDTO;
 import edu.ifmg.produto.dtos.ProductDTO;
+import edu.ifmg.produto.dtos.ProductListDTO;
 import edu.ifmg.produto.entities.Category;
 import edu.ifmg.produto.entities.Product;
+import edu.ifmg.produto.projections.ProductProjection;
 import edu.ifmg.produto.repository.ProductRepository;
 import edu.ifmg.produto.resources.ProductResource;
 import edu.ifmg.produto.services.exceptions.DatabaseException;
@@ -13,12 +15,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import org.springframework.data.domain.Pageable;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -138,6 +144,24 @@ public class ProductService {
                         entity.getCategories().add(new Category(c)));
     }
 
-    public Page<ProductDTO> findAllPaged(String name, String categpryId, Pageable pageable) {
+    public Page<ProductListDTO> findAllPaged(String name, String categoryId, Pageable pageable) {
+
+
+
+        List<Long> categoriesId = null;
+
+        if (!categoryId.equals("0"))
+               categoriesId = Arrays.stream(categoryId.split(","))
+                                    .map(id -> Long.parseLong(id))
+                                    .toList();
+
+        Page<ProductProjection> page = productRepository.searchProducts(categoriesId,name,pageable);
+
+        List<ProductListDTO> dtos =
+                page.stream()
+                        .map(p -> new ProductListDTO(p))
+                        .toList();
+
+        return new PageImpl<>(dtos, pageable, page.getTotalElements());
     }
 }

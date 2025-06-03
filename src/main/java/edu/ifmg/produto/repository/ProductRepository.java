@@ -21,7 +21,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                 SELECT DISTINCT p.id, p.name, p.image_url, p.price
                 FROM products p
                 INNER JOIN product_category pc ON pc.product_id = p.id
-                WHERE (:categoriesID IS NULL || pc.category_id in :categoriesID)
+                WHERE (:categoriesID IS NULL OR pc.category_id in :categoriesID)
                         and LOWER(p.name) like LOWER(CONCAT('%',:name,'%'))
             ) as tb_result
             """,
@@ -31,7 +31,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                 SELECT DISTINCT p.id, p.name, p.image_url, p.price
                 FROM products p
                 INNER JOIN product_category pc ON pc.product_id = p.id
-                WHERE (:categoriesID IS NULL || pc.category_id in :categoriesID)
+                WHERE (:categoriesID IS NULL OR pc.category_id in :categoriesID)
                         and LOWER(p.name) like LOWER(CONCAT('%',:name,'%'))
             ) as tb_result
             """
