@@ -125,5 +125,33 @@ public class UserResource {
 
 
 
+    //COPIA DO INSERT
+    @PostMapping(value="/signup", produces = "application/json")
+    @Operation(
+            description = "Sign Up",
+            summary = "You can sign up.",
+            responses = {
+                    @ApiResponse(description = "Created", responseCode = "201"),
+                    @ApiResponse(description = "Bad Request", responseCode = "400"),
+                    @ApiResponse(description = "Unauthorized", responseCode = "401"),
+                    @ApiResponse(description = "Forbidden", responseCode = "403"),
+            }
+    )
+
+    public ResponseEntity<UserDTO>
+    signup(@Valid @RequestBody UserInsertDTO dto) { //o @Valid serve pra aplicar as validaçoes que adicionamos no DTO (@Size, @Positive, ect.)
+        UserDTO user = userService.signup(dto);
+
+        //essa uri que retornamos já está atendendo ao HATEOAS - eu insiro um produto e ja digo pro cara o que eu posso fazer com aquele produto, e nesse caço ele foi no cabeçalho da resposta
+        URI uri = ServletUriComponentsBuilder.
+                fromCurrentRequest(). //pega o caminho da minha aplicação
+                        path("/{id}").//ele adiciona o id na rota
+                        buildAndExpand(user.getId()).
+                toUri();
+
+        return ResponseEntity.created(uri).body(user);
+    }
+
+
 
 }

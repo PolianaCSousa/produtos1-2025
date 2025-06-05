@@ -131,9 +131,12 @@ public class ProductResource {
                     @ApiResponse(description = "OK", responseCode = "200")
             }
     )
-    public ResponseEntity<Page<ProductListDTO>> findAllPaged(Pageable pageable, @RequestParam(value = "categoryId", defaultValue = "0") String categoryId, @RequestParam(value = "name", defaultValue = "") String name) {
+    public ResponseEntity<Page<ProductListDTO>> findAllPaged(Pageable pageable,
+                                                             @RequestParam(value = "categoryId", defaultValue = "0") String categoryId,
+                                                             @RequestParam(value = "name", defaultValue = "") String name)
+    {
         Page<ProductListDTO> products = productService.findAllPaged(name, categoryId, pageable);
-        return null; //é a mesma coisa que ok().body(products);
+        return ResponseEntity.ok().body(products); //é a mesma coisa que ok().body(products);
     }
 
 
