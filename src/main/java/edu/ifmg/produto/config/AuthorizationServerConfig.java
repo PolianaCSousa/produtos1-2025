@@ -1,5 +1,5 @@
 package edu.ifmg.produto.config;
-
+//AQUI QUE ELE PERMITIU TODAS AS ROTAS (LIBEROU TODAS AS ROTAS) com o @preauthorize em cima da rota que bloqueio e restrinjo para determinados papeis
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
@@ -7,7 +7,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
-
+//vcwg ylog bffp azf
 import edu.ifmg.produto.config.customgrant.CustomPasswordAuthenticationConverter;
 import edu.ifmg.produto.config.customgrant.CustomPasswordAuthenticationProvider;
 import edu.ifmg.produto.config.customgrant.CustomUserAuthorities;

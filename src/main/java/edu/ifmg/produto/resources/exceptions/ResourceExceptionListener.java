@@ -1,6 +1,7 @@
 package edu.ifmg.produto.resources.exceptions;
 
 import edu.ifmg.produto.services.exceptions.DatabaseException;
+import edu.ifmg.produto.services.exceptions.EmailException;
 import edu.ifmg.produto.services.exceptions.ResourceNotFound;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -59,4 +60,19 @@ public class ResourceExceptionListener { //posso trocar listener por handler e e
 
         return ResponseEntity.status(status).body(error);
     }
+
+    @ExceptionHandler(EmailException.class) //quando uma excessão do tipo DtabaseException acontecer o java vai acionar o metodo abaixo
+    public ResponseEntity<StandartError> emailException(EmailException ex, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        StandartError error = new StandartError();
+        error.setStatus(status.value());
+        error.setMessage(ex.getMessage());
+        error.setError("Email failed");
+        error.setTimestamp(Instant.now());
+        error.setPath(request.getRequestURI());
+
+        return ResponseEntity.status(status).body(error);
+    }
+
+
 }
