@@ -43,6 +43,7 @@ public class UserResource {
         return ResponseEntity.ok(users); //é a mesma coisa que ok().body(users);
     }
 
+
     @GetMapping (value = "/{id}", produces = "application/json")
     @Operation(
             description = "Get a user",
@@ -102,6 +103,8 @@ public class UserResource {
 
         return ResponseEntity.ok().body(dto);
     }
+
+
 
     @DeleteMapping(value="/{id}")
     @Operation(

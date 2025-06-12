@@ -7,7 +7,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
-//vcwg ylog bffp azf
+
 import edu.ifmg.produto.config.customgrant.CustomPasswordAuthenticationConverter;
 import edu.ifmg.produto.config.customgrant.CustomPasswordAuthenticationProvider;
 import edu.ifmg.produto.config.customgrant.CustomUserAuthorities;

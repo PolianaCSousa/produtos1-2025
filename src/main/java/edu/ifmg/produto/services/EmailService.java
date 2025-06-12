@@ -19,7 +19,7 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-
+//ESTOU COM ERRO - Username and password not accepted
 
 
     public void sendMail(EmailDTO emailDto) {
